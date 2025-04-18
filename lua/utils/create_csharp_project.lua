@@ -2,7 +2,7 @@
 
 local M = {}
 
--- Função para criar a estrutura de um projeto C# com código antigo
+-- Função para criar a estrutura de um projeto C# simplificado
 function M.create_project()
   -- Solicita o nome do projeto
   local project_name = vim.fn.input("Enter project name: ")
@@ -12,7 +12,7 @@ function M.create_project()
   end
 
   -- Define um local padrão como o diretório onde o Neovim foi iniciado
-  local default_dir = vim.fn.getcwd(-1)
+  local default_dir = vim.fn.getcwd()
 
   -- Solicita o local do diretório com um valor padrão
   local project_dir = vim.fn.input("Enter the directory path [default: " .. default_dir .. "]: ", default_dir)
@@ -32,9 +32,22 @@ function M.create_project()
 
   -- Cria os diretórios principais do projeto
   vim.fn.mkdir(project_path, "p")
-  vim.fn.mkdir(project_path .. "/src", "p")
   vim.fn.mkdir(project_path .. "/bin", "p")
   vim.fn.mkdir(project_path .. "/obj", "p")
+
+  -- Cria o arquivo .csproj no diretório do projeto
+  local csproj_file = io.open(project_path .. "/" .. project_name .. ".csproj", "w")
+  csproj_file:write([[
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
+]])
+  csproj_file:close()
 
   -- Cria o arquivo Program.cs no diretório do projeto
   local program_file = io.open(project_path .. "/Program.cs", "w")
@@ -43,28 +56,13 @@ using System;
 
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
         Console.WriteLine("Hello, World!");
     }
 }
 ]])
   program_file:close()
-
-  -- Cria o arquivo Main.cs dentro de src
-  local main_file = io.open(project_path .. "/src/Main.cs", "w")
-  main_file:write([[
-using System;
-
-class MainClass
-{
-    public static void Run()
-    {
-        Console.WriteLine("Main logic here...");
-    }
-}
-]])
-  main_file:close()
 
   -- Exibe uma mensagem de confirmação
   print("✅ C# Project '" .. project_name .. "' created in directory: " .. project_path)

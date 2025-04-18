@@ -5,6 +5,13 @@ vim.o.shiftwidth = 2
 vim.o.expandtab = true
 vim.g.mapleader = " "
 vim.opt.cursorline = true
+vim.o.showmode = false
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = "*",
+  command = "cd %:p:h",
+})
+
 
 -- Caminho onde o lazy.nvim será instalado
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

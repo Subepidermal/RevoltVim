@@ -4,11 +4,14 @@ return {
   config = function()
     require('lualine').setup({
       options = {
-        theme = '16color',
+        theme = 'revolt',
         section_separators = '',
         component_separators = ''
-      }
-    })
-  end
+      },
+      sections = {
+        lualine_c = { {'filename', path = 2} },
+      },
+  })
+end
 }
 
